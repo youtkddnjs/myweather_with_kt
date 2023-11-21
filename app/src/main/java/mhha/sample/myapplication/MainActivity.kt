@@ -1,8 +1,10 @@
 package mhha.sample.myapplication
 
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
+import androidx.annotation.RequiresApi
 import mhha.sample.myapplication.databinding.ActivityMainBinding
 import retrofit2.Call
 import retrofit2.Callback
@@ -12,6 +14,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 class MainActivity : AppCompatActivity() {
     private lateinit var binding : ActivityMainBinding
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -24,10 +27,11 @@ class MainActivity : AppCompatActivity() {
 
         val service = retrofit.create(WeatherService::class.java)
 
+        val baseDateTime = BaseDateTime.getBaseDateTime()
         service.getVillageForescast(
             servicekey = "djc2Y0AjqXY1scaDhW/GnRjusKgsTFTW70ThCP/x8E2f9XeA1dUDVhP6RypcGM67pNPxPvrFQuGpYI4hQkGVOw==",
-            baseDate = "20231121",
-            baseTime = "1400",
+            baseDate = baseDateTime.baseDate,
+            baseTime = baseDateTime.baseTime,
             nx = 55,
             ny = 127
         ).enqueue(object : Callback<WeatherEntity>{
@@ -54,6 +58,7 @@ class MainActivity : AppCompatActivity() {
                     }//forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"].apply
                 }//for (i in forecastList)
                 Log.i("Forecast", forecastDataTimeMap.toString())
+                Log.i("Forecast", "${baseDateTime.baseDate}, ${baseDateTime.baseTime }")
             }//override fun onResponse(call: Call<WeatherEntity>, response: Response<WeatherEntity>)
 
             override fun onFailure(call: Call<WeatherEntity>, t: Throwable) {
