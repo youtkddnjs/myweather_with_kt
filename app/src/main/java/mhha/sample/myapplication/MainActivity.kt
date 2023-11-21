@@ -32,11 +32,29 @@ class MainActivity : AppCompatActivity() {
             ny = 127
         ).enqueue(object : Callback<WeatherEntity>{
             override fun onResponse(call: Call<WeatherEntity>, response: Response<WeatherEntity>) {
+                val forecastDataTimeMap = mutableMapOf<String, Forecast>()
                 val forecastList = response.body()?.response?.body?.items?.forecastEntities.orEmpty()
                 for (i in forecastList){
-                    Log.i("Forecast", i.toString())
-                }
-            }
+
+//                    Log.i("Forecast", i.toString())
+
+                    if(forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"] == null){
+                        forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"] =
+                            Forecast(forecastDate = i.forecastDate, forecastTime = i.forecastTime)
+                    }
+
+                    forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"]?.apply {
+                        when(i.category){
+                            Category.POP.toString() -> {precipitation = i.forecastValue.toInt()}
+                            Category.PTY.toString() -> {precipitationType = transformRainType(i)}
+                            Category.SKY.toString() -> {sky = transformSkyType(i)}
+                            Category.TMP.toString() -> {temperature = i.forecastValue.toDouble()}
+                            else -> {}
+                        }
+                    }//forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"].apply
+                }//for (i in forecastList)
+                Log.i("Forecast", forecastDataTimeMap.toString())
+            }//override fun onResponse(call: Call<WeatherEntity>, response: Response<WeatherEntity>)
 
             override fun onFailure(call: Call<WeatherEntity>, t: Throwable) {
                 t.printStackTrace()
@@ -46,5 +64,24 @@ class MainActivity : AppCompatActivity() {
     }//override fun onCreate(savedInstanceState: Bundle?)
 
 
+    private fun transformRainType(forecast: ForecastEntity): String {
+       return when(forecast.forecastValue.toInt()){
+            0 -> "없음"
+            1 -> "비"
+            2-> "비/눈"
+            3-> "눈"
+            4-> "소나기"
+           else -> ""
+       }
+    } //private fun transformRainType(forecast: ForecastEntity): String
+
+    private fun transformSkyType(forecast: ForecastEntity): String {
+        return when(forecast.forecastValue.toInt()){
+            0 -> "맑음"
+            1 -> "구름많음"
+            2-> "흐림"
+            else -> ""
+        }
+    } //private fun transformSkyType(forecast: ForecastEntity): String
 
 }//class MainActivity : AppCompatActivity()
