@@ -46,11 +46,13 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var binding : ActivityMainBinding
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        locationPermissionRequest.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION))
 
     }//override fun onCreate(savedInstanceState: Bundle?)
 
@@ -96,7 +98,8 @@ class MainActivity : AppCompatActivity() {
             val baseDateTime = BaseDateTime.getBaseDateTime()
 
             val converter = GeoPointConverter()
-            val point = converter.convert(lon = it.longitude , lat = it.latitude)
+//            val point = converter.convert(lon = it.longitude , lat = it.latitude)
+            val point = converter.convert(lon = 127.04 , lat = 37.51)
             service.getVillageForescast(
                 servicekey = "djc2Y0AjqXY1scaDhW/GnRjusKgsTFTW70ThCP/x8E2f9XeA1dUDVhP6RypcGM67pNPxPvrFQuGpYI4hQkGVOw==",
                 baseDate = baseDateTime.baseDate,
@@ -126,6 +129,20 @@ class MainActivity : AppCompatActivity() {
                             }
                         }//forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"].apply
                     }//for (i in forecastList)
+
+                    val list = forecastDataTimeMap.values.toMutableList()
+                    list.sortWith{f1, f2, ->
+                        val f1DateTime = "${f1.forecastDate}${f1.forecastTime}"
+                        val f2DateTime = "${f2.forecastDate}${f2.forecastTime}"
+                        return@sortWith f1DateTime.compareTo(f2DateTime)
+                    }
+
+                    val currentForecast = list.first()
+                    binding.temperatureTextView.text= getString(R.string.temperature_text, currentForecast.temperature)
+                    binding.skyTextView.text = currentForecast.weather
+                    binding.precipitationTextView.text = getString(R.string.precipitation_text, currentForecast.precipitation)
+
+
                     Log.i("Forecast", forecastDataTimeMap.toString())
                     Log.i("Forecast", "${baseDateTime.baseDate}, ${baseDateTime.baseTime }")
                 }//override fun onResponse(call: Call<WeatherEntity>, response: Response<WeatherEntity>)
