@@ -15,6 +15,7 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
 import mhha.sample.myapplication.databinding.ActivityMainBinding
+import mhha.sample.myapplication.databinding.ItemForecastBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -142,6 +143,20 @@ class MainActivity : AppCompatActivity() {
                     binding.skyTextView.text = currentForecast.weather
                     binding.precipitationTextView.text = getString(R.string.precipitation_text, currentForecast.precipitation)
 
+                    binding.childForecastLayout.apply {
+                        list.forEachIndexed { index, forecast ->
+                            if(index ==0){
+                                return@forEachIndexed
+                            }
+                            val itemView = ItemForecastBinding.inflate(layoutInflater)
+
+                            itemView.timeTextView.text = forecast.forecastTime
+                            itemView.weatherTextView.text = forecast.weather
+                            itemView.temperatureTextView.text =
+                                getString(R.string.temperature_text, forecast.temperature)
+                            addView(itemView.root)
+                        }
+                    }//binding.childForecastLayout.apply
 
                     Log.i("Forecast", forecastDataTimeMap.toString())
                     Log.i("Forecast", "${baseDateTime.baseDate}, ${baseDateTime.baseTime }")
