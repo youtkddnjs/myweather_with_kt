@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 import android.util.Log
 import java.lang.Math.PI

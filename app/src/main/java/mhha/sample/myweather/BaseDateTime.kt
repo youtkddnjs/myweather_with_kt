@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 import android.os.Build
 import androidx.annotation.RequiresApi

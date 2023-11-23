@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 import android.app.PendingIntent
 import android.appwidget.AppWidgetManager

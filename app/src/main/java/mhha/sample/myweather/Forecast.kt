@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 data class Forecast(
     val forecastDate: String,

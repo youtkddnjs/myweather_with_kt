@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 import retrofit2.Call
 import retrofit2.http.GET

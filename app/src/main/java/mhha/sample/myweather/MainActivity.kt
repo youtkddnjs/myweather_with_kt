@@ -1,4 +1,4 @@
-package mhha.sample.myapplication
+package mhha.sample.myweather
 
 import android.Manifest
 import android.content.Intent
@@ -6,17 +6,18 @@ import android.content.pm.PackageManager
 import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.Settings
 import android.util.Log
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.LocationServices
-import mhha.sample.myapplication.databinding.ActivityMainBinding
-import mhha.sample.myapplication.databinding.ItemForecastBinding
+import mhha.sample.myweather.R
+import mhha.sample.myweather.databinding.ActivityMainBinding
+import mhha.sample.myweather.databinding.ItemForecastBinding
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
