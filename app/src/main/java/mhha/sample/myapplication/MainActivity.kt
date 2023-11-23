@@ -73,10 +73,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun transformSkyType(forecast: ForecastEntity): String {
         return when(forecast.forecastValue.toInt()){
-            0 -> "맑음"
-            1 -> "구름많음"
-            2-> "흐림"
-            else -> ""
+            1 -> "맑음"
+            3 -> "구름많음"
+            4 -> "흐림"
+            else -> "-"
         }
     } //private fun transformSkyType(forecast: ForecastEntity): String
 
@@ -95,8 +95,8 @@ class MainActivity : AppCompatActivity() {
             Thread{
                 try {
                     val addressList = Geocoder(this, Locale.KOREA).getFromLocation(
-//                        it.latitude, it.longitude, 1)
-                        37.51, 127.04, 1)
+                        it.latitude, it.longitude, 1)
+//                        37.51, 127.04, 1)
                     runOnUiThread{
                         binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
                     }
@@ -116,8 +116,8 @@ class MainActivity : AppCompatActivity() {
             val baseDateTime = BaseDateTime.getBaseDateTime()
 
             val converter = GeoPointConverter()
-//            val point = converter.convert(lon = it.longitude , lat = it.latitude)
-            val point = converter.convert(lon = 127.04 , lat = 37.51)
+            val point = converter.convert(lon = it.longitude , lat = it.latitude)
+//            val point = converter.convert(lon = 127.04 , lat = 37.51)
             service.getVillageForescast(
                 servicekey = "djc2Y0AjqXY1scaDhW/GnRjusKgsTFTW70ThCP/x8E2f9XeA1dUDVhP6RypcGM67pNPxPvrFQuGpYI4hQkGVOw==",
                 baseDate = baseDateTime.baseDate,
@@ -167,7 +167,7 @@ class MainActivity : AppCompatActivity() {
                             }
                             val itemView = ItemForecastBinding.inflate(layoutInflater)
 
-                            itemView.timeTextView.text = forecast.forecastTime
+                            itemView.timeTextView.text = "${forecast.forecastDate} ${forecast.forecastTime}"
                             itemView.weatherTextView.text = forecast.weather
                             itemView.temperatureTextView.text =
                                 getString(R.string.temperature_text, forecast.temperature)
