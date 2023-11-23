@@ -3,6 +3,7 @@ package mhha.sample.myapplication
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.location.Geocoder
 import android.net.Uri
 import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
@@ -21,6 +22,7 @@ import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.util.Locale
 
 class MainActivity : AppCompatActivity() {
 
@@ -89,6 +91,21 @@ class MainActivity : AppCompatActivity() {
         }
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient?.lastLocation?.addOnSuccessListener {
+
+            Thread{
+                try {
+                    val addressList = Geocoder(this, Locale.KOREA).getFromLocation(
+//                        it.latitude, it.longitude, 1)
+                        37.51, 127.04, 1)
+                    runOnUiThread{
+                        binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
+                    }
+                } catch (e: Exception){
+                    e.printStackTrace()
+                }
+            }.start()
+
+
             val retrofit= Retrofit.Builder()
                 .baseUrl("http://apis.data.go.kr/")
                 .addConverterFactory(GsonConverterFactory.create())
