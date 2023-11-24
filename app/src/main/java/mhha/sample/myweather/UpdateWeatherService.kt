@@ -34,15 +34,27 @@ class UpdateWeatherService: Service(){
         createChannel()
         startForeground(1,createNotification())
 
+        val appWidgetManager = AppWidgetManager.getInstance(this)
+
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED
                 && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_BACKGROUND_LOCATION) != PackageManager.PERMISSION_GRANTED)
         {
-            //todo 위젯을 권한 없을 상태로 표시하고, 클릭했을 때 팝업을 얻을 수 있도록 조정
+            val pendingIntent = Intent(this, SettingActivity::class.java).let {
+                PendingIntent.getActivity(this,2, it, PendingIntent.FLAG_IMMUTABLE)
+            }
+            //위젯을 권한 없을 상태로 표시하고, 클릭했을 때 팝업을 얻을 수 있도록 조정
+            RemoteViews(packageName,R.layout.widget_weather).apply {
+                setTextViewText(R.id.temperatureTextView, "권한없음")
+                setTextViewText(R.id.weatherTextView, "")
+                setOnClickPendingIntent(R.id.temperatureTextView, pendingIntent)
+            }.also { remoteViews ->
+                val appWidgetName = ComponentName(this, WeatherAppWidgetProvider::class.java)
+                appWidgetManager.updateAppWidget(appWidgetName, remoteViews)
+            }
+            stopSelf()
             return onStartCommand(intent, flags, startId)
         }
-
-        val appWidgetManager = AppWidgetManager.getInstance(this)
 
         //위치를 가져와서 업데이트하기
         LocationServices.getFusedLocationProviderClient(this).lastLocation.addOnSuccessListener { location ->
@@ -82,7 +94,33 @@ class UpdateWeatherService: Service(){
                     stopSelf()
                 },
                 failureCallback = {
-                    //todo 위제을 에러 상태로 표시
+
+                    //클릭하면 업데이트하는 코드
+                    var pendingServiceIntent: PendingIntent = Intent(this, UpdateWeatherService::class.java)
+                        .let {
+                            PendingIntent.getService(this,1, it,PendingIntent.FLAG_IMMUTABLE)
+                        }
+
+                    //위제을 에러 상태로 표시
+                    // 위젯 텍스트에 글 넣기
+                    RemoteViews(packageName,R.layout.widget_weather).apply{
+                        setTextViewText(
+                            R.id.temperatureTextView,
+                            "ERROR"
+                        )
+                        setTextViewText(
+                            R.id.weatherTextView,
+                            ""
+                        )
+                        // 클릭하면 업데이트함.
+                        setOnClickPendingIntent(R.id.temperatureTextView,pendingServiceIntent)
+                        Log.d("setOnClickPendingIntent", "setOnClickPendingIntent")
+
+                    }.also {remoteView ->
+                        val appWidgetName = ComponentName(this, WeatherAppWidgetProvider::class.java)
+                        appWidgetManager.updateAppWidget(appWidgetName,remoteView)
+                    }
+
                     stopSelf()
                 }
             )

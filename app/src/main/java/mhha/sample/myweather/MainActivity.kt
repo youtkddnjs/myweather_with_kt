@@ -49,7 +49,6 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
         locationPermissionRequest.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION))
 
     }//override fun onCreate(savedInstanceState: Bundle?)
@@ -59,6 +58,7 @@ class MainActivity : AppCompatActivity() {
 
     @RequiresApi(Build.VERSION_CODES.O)
     private fun updateLocation(){
+        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         //위치권한
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED )
@@ -67,8 +67,7 @@ class MainActivity : AppCompatActivity() {
             return
         }
 
-        val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
-        fusedLocationClient?.lastLocation?.addOnSuccessListener {
+        fusedLocationClient.lastLocation.addOnSuccessListener {
             Thread{
                 try {
 
@@ -78,10 +77,11 @@ class MainActivity : AppCompatActivity() {
                     Log.d("addressList", "${addressList.toString()} ${it.latitude} ${it.longitude}")
 
                     runOnUiThread{
-                        if (addressList?.get(0)?.thoroughfare.isNullOrEmpty()) {
-                            binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
-                        }else{
+                        Log.d("address", "${addressList?.get(0)?.thoroughfare.isNullOrEmpty()}")
+                        if(addressList?.get(0)?.thoroughfare.isNullOrEmpty()){
                             binding.locationTextView.text = "없음"
+                        }else{
+                            binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
                         }
                     }
                 } catch (e: Exception){
