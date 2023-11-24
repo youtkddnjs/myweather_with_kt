@@ -68,7 +68,6 @@ class MainActivity : AppCompatActivity() {
         }
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient?.lastLocation?.addOnSuccessListener {
-
             Thread{
                 try {
                     val addressList = Geocoder(this, Locale.KOREA).getFromLocation(
@@ -81,7 +80,6 @@ class MainActivity : AppCompatActivity() {
                     e.printStackTrace()
                 }
             }.start()
-
             Log.i("ManintActivity", "getVillageForcate")
             WeatherRepository.getVillageForcate(
                 longitude = it.longitude,
@@ -107,14 +105,12 @@ class MainActivity : AppCompatActivity() {
                             addView(itemView.root)
                         }
                     }//binding.childForecastLayout.apply
-
                     Log.i("Forecast", list.toString())
-
                 },
                 failureCallback = {
                     it.printStackTrace()
                 }
-            )
+            )//WeatherRepository.getVillageForcate
 
         }//fusedLocationClient?.lastLocation?.addOnSuccessListener
     }//private fun updateLocation()
