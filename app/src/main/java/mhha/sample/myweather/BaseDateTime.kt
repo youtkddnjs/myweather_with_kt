@@ -16,7 +16,7 @@ data class BaseDateTime(
             var dateTime = LocalDateTime.now()
             val baseTime = when (dateTime.toLocalTime()) {
                 in LocalTime.of(0,0) .. LocalTime.of(2,30) -> {
-                    dateTime = dateTime.minusDays(-1)
+                    dateTime = dateTime.minusDays(1)
                     "2300"
                 }
                 in LocalTime.of(2, 30)..LocalTime.of(5, 30) -> "0200"

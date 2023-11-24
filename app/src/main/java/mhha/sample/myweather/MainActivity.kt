@@ -66,15 +66,23 @@ class MainActivity : AppCompatActivity() {
             locationPermissionRequest.launch(arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION, android.Manifest.permission.ACCESS_COARSE_LOCATION))
             return
         }
+
         val fusedLocationClient = LocationServices.getFusedLocationProviderClient(this)
         fusedLocationClient?.lastLocation?.addOnSuccessListener {
             Thread{
                 try {
+
                     val addressList = Geocoder(this, Locale.KOREA).getFromLocation(
                         it.latitude, it.longitude, 1)
 //                        37.51, 127.04, 1)
+                    Log.d("addressList", "${addressList.toString()} ${it.latitude} ${it.longitude}")
+
                     runOnUiThread{
-                        binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
+                        if (addressList?.get(0)?.thoroughfare.isNullOrEmpty()) {
+                            binding.locationTextView.text = addressList?.get(0)?.thoroughfare.orEmpty()
+                        }else{
+                            binding.locationTextView.text = "없음"
+                        }
                     }
                 } catch (e: Exception){
                     e.printStackTrace()

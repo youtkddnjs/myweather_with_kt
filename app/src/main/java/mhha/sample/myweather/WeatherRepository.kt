@@ -41,7 +41,7 @@ object WeatherRepository {
                 val forecastList = response.body()?.response?.body?.items?.forecastEntities.orEmpty()
                 for (i in forecastList){
 
-                    Log.i("Forecast", i.toString())
+//                    Log.i("Forecast", i.toString())
 
                     if(forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"] == null){
                         forecastDataTimeMap["${i.forecastDate}/${i.forecastTime}"] =

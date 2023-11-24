@@ -3,8 +3,12 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
+    <uses-permission android:name="android.permission.POST_NOTIFICATIONS"/>
+
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
+    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION"/>
 
     <application
         android:allowBackup="true"
@@ -27,7 +31,7 @@
             </intent-filter>
         </activity>
 
-        <receiver android:name="WeatherAppWidgetProvider"
+        <receiver android:name=".WeatherAppWidgetProvider"
             android:exported="false">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
@@ -35,6 +39,8 @@
             <meta-data android:name="android.appwidget.provider"
                 android:resource="@xml/appwidget_info" />
         </receiver>
+        <service android:name=".UpdateWeatherService"
+            android:foregroundServiceType="location"/>
     </application>
 
 
